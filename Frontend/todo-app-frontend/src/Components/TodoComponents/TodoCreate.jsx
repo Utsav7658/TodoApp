@@ -15,12 +15,18 @@ function TodoCreate(props) {
       done: done,
       dateCompletion: dateCompletion,
     };
-    if(props.todo === null){
-    createTodo(todo);
-  }else{
-    updateTodoById(props.todo.id, todo)
-  }
+    if (props.todo === null) {
+      createTodo(todo);
+    } else {
+      updateTodoById(props.todo.id, todo);
+    }
     console.log("Todo Created Successfully!");
+    setDescription("");
+    setDone(false);
+    setDateCompletion("");
+  };
+
+  const handleClear = () => {
     setDescription("");
     setDone(false);
     setDateCompletion("");
@@ -45,6 +51,7 @@ function TodoCreate(props) {
             className="form-check-input"
             type="checkbox"
             value={done}
+            checked={done}
             onChange={(e) => setDone(e.target.value)}
           ></input>
         </div>
@@ -59,6 +66,9 @@ function TodoCreate(props) {
         </div>
         <div>
           <button className="btn btn-success">Submit</button>
+          <button className="btn btn-warning" onClick={handleClear}>
+            Clear
+          </button>
         </div>
       </form>
     </div>

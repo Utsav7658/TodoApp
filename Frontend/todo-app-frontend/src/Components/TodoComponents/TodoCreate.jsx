@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createTodo, updateTodoById } from "../API/API";
 
 function TodoCreate(props) {
-  const [description, setDescription] = useState(props.todo.description);
-  const [done, setDone] = useState(props.todo.done);
-  const [dateCompletion, setDateCompletion] = useState(
-    props.todo.dateCompletion
-  );
-
+  const [description, setDescription] = useState("");
+  const [done, setDone] = useState(false);
+  const [dateCompletion, setDateCompletion] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     const todo = {
@@ -15,15 +12,13 @@ function TodoCreate(props) {
       done: done,
       dateCompletion: dateCompletion,
     };
-    if (props.todo === null) {
+    if (props.todo.length === 0) {
       createTodo(todo);
     } else {
       updateTodoById(props.todo.id, todo);
     }
     console.log("Todo Created Successfully!");
-    setDescription("");
-    setDone(false);
-    setDateCompletion("");
+    handleClear();
   };
 
   const handleClear = () => {
@@ -31,6 +26,23 @@ function TodoCreate(props) {
     setDone(false);
     setDateCompletion("");
   };
+
+  useEffect(() => {
+    if (props.todo.length === 0) {
+      setDescription("");
+      setDone(false);
+      setDateCompletion("");
+    } else {
+      setDescription(props.todo.description);
+      setDateCompletion(props.todo.dateCompletion);
+      setDone(props.todo.done);
+    }
+  }, [
+    props.todo.dateCompletion,
+    props.todo.description,
+    props.todo.done,
+    props.todo.length,
+  ]);
 
   return (
     <div className="container row g-3 align-items-center">
@@ -52,7 +64,7 @@ function TodoCreate(props) {
             type="checkbox"
             value={done}
             checked={done}
-            onChange={(e) => setDone(e.target.value)}
+            onChange={(e) => {setDone(!done)}}
           ></input>
         </div>
         <div className="">
@@ -66,11 +78,11 @@ function TodoCreate(props) {
         </div>
         <div>
           <button className="btn btn-success">Submit</button>
-          <button className="btn btn-warning" onClick={handleClear}>
-            Clear
-          </button>
         </div>
       </form>
+      <button className="btn btn-warning" onClick={handleClear}>
+        Clear
+      </button>
     </div>
   );
 }

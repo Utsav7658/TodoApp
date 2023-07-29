@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { deleteTodoById, getAllTodos, getTodoById } from "../API/API";
 import TodoList from "./TodoList";
 import TodoCreate from "./TodoCreate";
@@ -7,13 +7,11 @@ function TodoHome() {
   const [todos, setTodos] = useState([]);
   const [showTodoCreate, setShowTodoCreate] = useState(false);
   const [todo, setTodo] = useState([]);
+  const [search, setSearch] = useState("");
 
   const getTodos = async () => {
     await getAllTodos().then(setTodos);
   };
-  useEffect(() => {
-    getTodos();
-  }, [showTodoCreate, setShowTodoCreate]);
 
   const handleShowCreateTodo = () => {
     setShowTodoCreate(!showTodoCreate);
@@ -32,19 +30,50 @@ function TodoHome() {
     getTodos();
   };
 
+  const searchTodo = useCallback((search, todos) => {
+    console.log(search);
+    const result = todos.filter((todoTemp) =>
+      todoTemp.description.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setTodos(result);
+  }, []);
+
+  useEffect(() => {
+    if (search === "") {
+      getTodos();
+    } else {
+      searchTodo(search, todos);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showTodoCreate, setShowTodoCreate, search, searchTodo]);
+
   return (
     <div>
       <button className="btn btn-primary" onClick={handleShowCreateTodo}>
         {showTodoCreate ? "Close" : "Add Todo"}
       </button>
+
       {showTodoCreate ? (
         <TodoCreate todo={todo} />
       ) : (
-        <TodoList
-          updateTodo={updateTodo}
-          deleteTodo={deleteTodo}
-          todos={todos}
-        />
+        <>
+          <input
+            className="form-control"
+            placeholder="Search"
+            type="text"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
+          <TodoList
+            updateTodo={updateTodo}
+            deleteTodo={deleteTodo}
+            todos={todos}
+            searchTodo={searchTodo}
+          />
+        </>
       )}
     </div>
   );

@@ -8,6 +8,8 @@ function TodoHome() {
   const [showTodoCreate, setShowTodoCreate] = useState(false);
   const [todo, setTodo] = useState([]);
   const [search, setSearch] = useState("");
+  const [t, setT] = useState([]);
+  const [c, setC] = useState(false);
 
   const getTodos = async () => {
     await getAllTodos().then(setTodos);
@@ -18,20 +20,20 @@ function TodoHome() {
   };
 
   const updateTodo = async (id) => {
-    console.log("Updating " + id);
+    
 
     await getTodoById(id).then(setTodo);
     setShowTodoCreate(true);
   };
 
   const deleteTodo = async (id) => {
-    console.log("Deleting " + id);
+   
     await deleteTodoById(id);
     getTodos();
   };
 
   const searchTodo = useCallback((search, todos) => {
-    console.log(search);
+  
     const result = todos.filter((todoTemp) =>
       todoTemp.description.toLowerCase().includes(search.toLowerCase())
     );
@@ -39,8 +41,38 @@ function TodoHome() {
     setTodos(result);
   }, []);
 
+  const sortByDate = () => {
+    setC(!c);
+    if (c) {
+      todos.sort(
+        (a, b) => new Date(b.dateCompletion) - new Date(a.dateCompletion)
+      );
+      
+      setT(todos);
+    } else {
+      todos.sort(
+        (a, b) => new Date(a.dateCompletion) - new Date(b.dateCompletion)
+      );
+    
+      setT(todos);
+    }
+  };
+
+  const sortByDescription = () => {
+    setC(!c);
+    if (c) {
+      todos.sort((a, b) => b.description.localeCompare(a.description));
+
+      setT(todos);
+    } else {
+      todos.sort((a, b) => a.description.localeCompare(b.description));
+      
+      setT(todos);
+    }
+  };
+
   useEffect(() => {
-    if (search === "") {
+    if (search === "" || c) {
       getTodos();
     } else {
       searchTodo(search, todos);
@@ -70,8 +102,10 @@ function TodoHome() {
           <TodoList
             updateTodo={updateTodo}
             deleteTodo={deleteTodo}
-            todos={todos}
+            todos={c ? t : todos}
             searchTodo={searchTodo}
+            sortByDate={sortByDate}
+            sortByDescription={sortByDescription}
           />
         </>
       )}

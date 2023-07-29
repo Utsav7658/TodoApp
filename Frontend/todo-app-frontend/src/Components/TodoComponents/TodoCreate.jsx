@@ -14,10 +14,12 @@ function TodoCreate(props) {
     };
     if (props.todo.length === 0) {
       createTodo(todo);
+      alert("Todo Created Successfully!");
     } else {
       updateTodoById(props.todo.id, todo);
+      alert("Todo Updated Successfully!");
     }
-    console.log("Todo Created Successfully!");
+
     handleClear();
   };
 
@@ -64,7 +66,9 @@ function TodoCreate(props) {
             type="checkbox"
             value={done}
             checked={done}
-            onChange={(e) => {setDone(!done)}}
+            onChange={(e) => {
+              setDone(!done);
+            }}
           ></input>
         </div>
         <div className="">

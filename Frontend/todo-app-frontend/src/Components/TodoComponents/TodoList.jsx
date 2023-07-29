@@ -7,8 +7,12 @@ function TodoList(props) {
       <table className="table table-striped">
         <thead>
           <tr>
-            <th>Description</th>
-            <th>Date to Complete</th>
+            <th style={{ cursor: "pointer" }} onClick={props.sortByDescription}>
+              Description
+            </th>
+            <th style={{ cursor: "pointer" }} onClick={props.sortByDate}>
+              Date to Complete
+            </th>
           </tr>
         </thead>
         <tbody>

@@ -1,4 +1,4 @@
-![image](https://github.com/Utsav7658/TodoApp/assets/139743041/7fd15172-17dc-4ccc-ba4c-d123030fde26)# TodoApp
+# TodoApp
 A Simple Todo Application using Spring Boot as Backend and React.js as Frontend.
 
 # Screenshots of the Todo App
